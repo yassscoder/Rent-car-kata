@@ -1,4 +1,5 @@
 import org.example.models.Car;
+import org.example.models.User;
 import org.example.repositories.CarRepository;
 import org.example.repositories.UserRepository;
 import org.example.services.RentalService;
@@ -37,6 +38,15 @@ public class ServiceShould {
         when(carRepository.findById(2L)).thenReturn(Optional.of(car));
         RuntimeException exception = assertThrows(RuntimeException.class, () -> rentalService.saveRental(1L, 2L));
         assertEquals("user not found", exception.getMessage());
+    }
+    @Test
+    @DisplayName("not save rental, car not found")
+    void not_save_rental_car_not_found() {
+        User user = new User(1L, "Mary");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(carRepository.findById(1L)).thenReturn(Optional.empty());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> rentalService.saveRental(1L, 2L));
+        assertEquals("car not found", exception.getMessage());
     }
 
 
