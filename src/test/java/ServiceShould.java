@@ -44,6 +44,7 @@ public class ServiceShould {
         RentalException exception = assertThrows(RentalException.class, () -> rentalService.saveRental(1L, 2L));
         assertEquals("user not found", exception.getMessage());
     }
+
     @Test
     @DisplayName("not save rental, car not found")
     void not_save_rental_car_not_found() {
@@ -53,12 +54,13 @@ public class ServiceShould {
         RentalException exception = assertThrows(RentalException.class, () -> rentalService.saveRental(1L, 2L));
         assertEquals("car not found", exception.getMessage());
     }
+
     @Test
     @DisplayName("not save rental, car already rented")
-    void not_save_rental_rented_car(){
+    void not_save_rental_rented_car() {
         Car car = new Car(2L, "4356ORJ", "Mazda");
         User user = new User(1L, "Mary");
-        Rental rental= new Rental(1L, user, car);
+        Rental rental = new Rental(user, car);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(carRepository.findById(2L)).thenReturn(Optional.of(car));
         when(rentalRepository.findRentalByCarId(2L)).thenReturn(Optional.of(rental));
@@ -67,4 +69,17 @@ public class ServiceShould {
         assertEquals("car already rented", exception.getMessage());
     }
 
+    @Test
+    @DisplayName("save rental")
+    void save_rental() throws RentalException {
+        Car car = new Car(2L, "4356ORJ", "Mazda");
+        User user = new User(1L, "Mary");
+        Rental rental = new Rental(user, car);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(carRepository.findById(2L)).thenReturn(Optional.of(car));
+        when(rentalRepository.findRentalByCarId(2L)).thenReturn(Optional.empty());
+
+        assertEquals(rental.getCar(), rentalService.saveRental(1l, 2L).getCar());
+        assertEquals(rental.getUser(), rentalService.saveRental(1L, 2L).getUser());
+    }
 }
