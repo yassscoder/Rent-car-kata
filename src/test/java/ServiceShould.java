@@ -1,3 +1,4 @@
+import org.example.exceptions.RentalException;
 import org.example.models.Car;
 import org.example.models.Rental;
 import org.example.models.User;
@@ -40,7 +41,7 @@ public class ServiceShould {
         Car car = new Car(2L, "4356ORJ", "Mazda");
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
         when(carRepository.findById(2L)).thenReturn(Optional.of(car));
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> rentalService.saveRental(1L, 2L));
+        RentalException exception = assertThrows(RentalException.class, () -> rentalService.saveRental(1L, 2L));
         assertEquals("user not found", exception.getMessage());
     }
     @Test
@@ -49,7 +50,7 @@ public class ServiceShould {
         User user = new User(1L, "Mary");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(carRepository.findById(1L)).thenReturn(Optional.empty());
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> rentalService.saveRental(1L, 2L));
+        RentalException exception = assertThrows(RentalException.class, () -> rentalService.saveRental(1L, 2L));
         assertEquals("car not found", exception.getMessage());
     }
     @Test
@@ -61,7 +62,7 @@ public class ServiceShould {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(carRepository.findById(2L)).thenReturn(Optional.of(car));
         when(rentalRepository.findRentalByCarId(2L)).thenReturn(Optional.of(rental));
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> rentalService.saveRental(1L, 2L));
+        RentalException exception = assertThrows(RentalException.class, () -> rentalService.saveRental(1L, 2L));
 
         assertEquals("car already rented", exception.getMessage());
     }

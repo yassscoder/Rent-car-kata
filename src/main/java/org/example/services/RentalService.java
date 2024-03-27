@@ -1,5 +1,6 @@
 package org.example.services;
 
+import org.example.exceptions.RentalException;
 import org.example.models.Rental;
 import org.example.repositories.CarRepository;
 import org.example.repositories.RentalRepository;
@@ -17,15 +18,15 @@ public class RentalService {
         this.rentalRepository= rentalRepository;
     }
 
-    public Rental saveRental(Long userId, Long carId) {
+    public Rental saveRental(Long userId, Long carId) throws RentalException {
         if (userRepository.findById(userId).isEmpty()) {
-            throw new NullPointerException("user not found");
+            throw new RentalException("user not found");
         }
         if (carRepository.findById(carId).isEmpty()) {
-            throw new NullPointerException("car not found");
+            throw new RentalException("car not found");
         }
         if(rentalRepository.findRentalByCarId(carId).isPresent()){
-            throw new NullPointerException("car already rented");
+            throw new RentalException("car already rented");
         }
         return new Rental(null,null, null);
     }
