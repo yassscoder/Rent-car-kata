@@ -1,6 +1,8 @@
 import org.example.models.Car;
+import org.example.models.Rental;
 import org.example.models.User;
 import org.example.repositories.CarRepository;
+import org.example.repositories.RentalRepository;
 import org.example.repositories.UserRepository;
 import org.example.services.RentalService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +20,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 public class ServiceShould {
+    @Mock
+    RentalRepository rentalRepository;
     @Mock
     UserRepository userRepository;
     @Mock
@@ -48,6 +52,18 @@ public class ServiceShould {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> rentalService.saveRental(1L, 2L));
         assertEquals("car not found", exception.getMessage());
     }
+    @Test
+    @DisplayName("not save rental, car already rented")
+    void not_save_rental_rented_car(){
+        Car car = new Car(2L, "4356ORJ", "Mazda");
+        User user = new User(1L, "Mary");
+        Rental rental= new Rental(1L, user, car);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(carRepository.findById(2L)).thenReturn(Optional.of(car));
+        when(rentalRepository.findRentalByCarId(2L)).thenReturn(Optional.of(rental));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> rentalService.saveRental(1L, 2L));
 
+        assertEquals("car already rented", exception.getMessage());
+    }
 
 }
