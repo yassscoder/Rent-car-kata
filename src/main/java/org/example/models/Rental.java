@@ -5,9 +5,17 @@ public class Rental {
     User user;
     Car car;
 
-    public Rental(Long id, User user, Car car) {
-        this.id = id;
+    public User getUser() {
+        return user;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public Rental(User user, Car car) {
         this.user = user;
         this.car = car;
     }
+
 }

@@ -28,7 +28,7 @@ public class RentalService {
         if(rentalRepository.findRentalByCarId(carId).isPresent()){
             throw new RentalException("car already rented");
         }
-        return new Rental(null,null, null);
+        return new Rental(userRepository.findById(userId).get(),carRepository.findById(carId).get());
     }
 
 }
